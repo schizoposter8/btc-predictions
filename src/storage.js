@@ -32,6 +32,12 @@ export function subscribeToState(onChange) {
   return onSnapshot(STATE_REF, (snap) => {
     if (snap.exists()) {
       onChange({ ...DEFAULT_STATE, ...snap.data() });
+    } else {
+      // First time ever — create the default document, which triggers this listener again
+      setDoc(STATE_REF, DEFAULT_STATE).catch(() => {
+        // If write fails (permissions etc), still unblock the UI with defaults
+        onChange(DEFAULT_STATE);
+      });
     }
   });
 }
