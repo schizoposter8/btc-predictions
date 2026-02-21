@@ -90,14 +90,14 @@ export default function AdminPanel({
     <>
       {/* Footer with admin button */}
       <div style={{
-        textAlign: "center", fontSize: 11, color: "#aaa",
+        textAlign: "center", fontSize: 13, color: "#aaa", fontWeight: 700,
         marginTop: 32, paddingTop: 20, borderTop: "1px solid #e0e0e8", lineHeight: 1.6
       }}>
         For entertainment only. Not financial advice. Predictions are shared in real time.
         <br />
         <button onClick={() => { setAdminOpen(!adminOpen); setAdminAuthed(false); setAdminPin(""); setAdminError(""); }} style={{
           background: "none", border: "1px solid #d0d0d8", borderRadius: 6,
-          color: "#999", fontSize: 11, padding: "4px 12px", marginTop: 8,
+          color: "#999", fontSize: 13, fontWeight: 700, padding: "4px 12px", marginTop: 8,
           cursor: "pointer", fontFamily: "'JetBrains Mono', monospace"
         }}>
           Admin
