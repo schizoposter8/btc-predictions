@@ -7,9 +7,9 @@ export default function PriceChart({ predictions, members, currentPrice }) {
   const [hoveredMember, setHoveredMember] = useState(null);
   const [tooltip, setTooltip] = useState(null);
 
-  const W = 820;
-  const H = 520;
-  const PAD = { top: 40, right: 160, bottom: 50, left: 72 };
+  const W = 984;
+  const H = 624;
+  const PAD = { top: 48, right: 175, bottom: 55, left: 80 };
   const chartW = W - PAD.left - PAD.right;
   const chartH = H - PAD.top - PAD.bottom;
 
