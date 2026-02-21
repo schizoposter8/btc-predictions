@@ -60,7 +60,16 @@ export default function AdminPanel({
 
   const handleAddMember = async () => {
     const name = newMemberName.trim();
-    if (!name || allMembers.includes(name)) return;
+    if (!name || allMembers.includes(name)) {
+      // If the name is a removed whitelist member, re-add them
+      if (name && WHITELIST.includes(name) && removedMembers.includes(name)) {
+        const updatedRemoved = removedMembers.filter(m => m !== name);
+        setRemovedMembers(updatedRemoved);
+        await updateState({ removedMembers: updatedRemoved });
+        setNewMemberName("");
+      }
+      return;
+    }
     const updated = [...extraMembers, name];
     setExtraMembers(updated);
     await updateState({ extraMembers: updated });
@@ -68,21 +77,32 @@ export default function AdminPanel({
   };
 
   const handleRemoveMember = async (name) => {
-    if (predictions[name]) {
-      const updatedPreds = { ...predictions };
+    // Build all updates in one batch so removal is complete and atomic
+    const updates = {};
+
+    // Always delete the prediction if it exists
+    const updatedPreds = { ...predictions };
+    if (updatedPreds[name]) {
       delete updatedPreds[name];
       setPredictions(updatedPreds);
-      await updateState({ predictions: updatedPreds });
+      updates.predictions = updatedPreds;
     }
+
+    // Remove from extra members or add to removed whitelist members
     if (extraMembers.includes(name)) {
-      const updated = extraMembers.filter(m => m !== name);
-      setExtraMembers(updated);
-      await updateState({ extraMembers: updated });
+      const updatedExtras = extraMembers.filter(m => m !== name);
+      setExtraMembers(updatedExtras);
+      updates.extraMembers = updatedExtras;
     }
     if (WHITELIST.includes(name)) {
-      const updated = [...removedMembers, name];
-      setRemovedMembers(updated);
-      await updateState({ removedMembers: updated });
+      const updatedRemoved = [...removedMembers, name];
+      setRemovedMembers(updatedRemoved);
+      updates.removedMembers = updatedRemoved;
+    }
+
+    // Single write to Firestore
+    if (Object.keys(updates).length > 0) {
+      await updateState(updates);
     }
   };
 

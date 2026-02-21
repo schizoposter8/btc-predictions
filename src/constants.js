@@ -10,9 +10,9 @@ export const SUBMISSION_DEADLINE = new Date("2026-03-01T00:00:00Z");
 
 // Whitelisted team - edit this list to control who can submit
 export const WHITELIST = [
-  "Ryan", "Lisa", "Phil", "Jeff", "Brandon",
-  "Josh", "Brock", "Anthony", "Jake", "Chandler",
-  "Kyle", "Khoa", "Franklyn", "Hervey", "Steve"
+  "Anthony", "Brandon", "Brock", "Chandler", "Franklyn",
+  "Hervey", "Jake", "Jeff", "Josh", "Khoa",
+  "Kyle", "Lisa", "Phil", "Ryan", "Steve"
 ];
 
 export const MEMBER_COLORS = [
