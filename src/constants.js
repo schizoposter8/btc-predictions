@@ -12,13 +12,13 @@ export const SUBMISSION_DEADLINE = new Date("2026-03-01T00:00:00Z");
 export const WHITELIST = [
   "Ryan", "Lisa", "Phil", "Jeff", "Brandon",
   "Josh", "Brock", "Anthony", "Jake", "Chandler",
-  "Kyle"
+  "Kyle", "Khoa", "Franklyn", "Hervey", "Steve"
 ];
 
 export const MEMBER_COLORS = [
   "#f7931a", "#8b5cf6", "#3b82f6", "#00d68f", "#f43f5e",
   "#eab308", "#06b6d4", "#ec4899", "#10b981", "#6366f1",
-  "#f97316", "#14b8a6"
+  "#f97316", "#14b8a6", "#a855f7", "#0ea5e9", "#84cc16"
 ];
 
 // Monthly BTC price data for 2026 (actual + projected path)
