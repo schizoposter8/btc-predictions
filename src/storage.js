@@ -1,5 +1,5 @@
 import { db } from "./firebase";
-import { doc, getDoc, setDoc, onSnapshot } from "firebase/firestore";
+import { doc, getDoc, setDoc, updateDoc, onSnapshot } from "firebase/firestore";
 
 const STATE_REF = doc(db, "app", "state");
 
@@ -22,9 +22,16 @@ export async function loadAllState() {
   return DEFAULT_STATE;
 }
 
-// Merge fields into the state document
+// Update specific top-level fields in the state document
+// Uses updateDoc (not setDoc merge) so that replacing a map field
+// like "predictions" fully overwrites it instead of deep-merging
 export async function updateState(fields) {
-  await setDoc(STATE_REF, fields, { merge: true });
+  try {
+    await updateDoc(STATE_REF, fields);
+  } catch (e) {
+    // If document doesn't exist yet, fall back to setDoc
+    await setDoc(STATE_REF, { ...DEFAULT_STATE, ...fields });
+  }
 }
 
 // Real-time listener — calls onChange whenever any field changes
