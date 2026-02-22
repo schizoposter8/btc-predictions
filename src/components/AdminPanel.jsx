@@ -60,19 +60,36 @@ export default function AdminPanel({
 
   const handleAddMember = async () => {
     const name = newMemberName.trim();
-    if (!name || allMembers.includes(name)) {
-      // If the name is a removed whitelist member, re-add them
-      if (name && WHITELIST.includes(name) && removedMembers.includes(name)) {
-        const updatedRemoved = removedMembers.filter(m => m !== name);
-        setRemovedMembers(updatedRemoved);
-        await updateState({ removedMembers: updatedRemoved });
-        setNewMemberName("");
-      }
+    if (!name) return;
+
+    const updates = {};
+
+    // If this is a previously removed whitelist member, restore them
+    if (WHITELIST.includes(name) && removedMembers.includes(name)) {
+      const updatedRemoved = removedMembers.filter(m => m !== name);
+      setRemovedMembers(updatedRemoved);
+      updates.removedMembers = updatedRemoved;
+    }
+    // If this is a brand new name not already on the team, add to extras
+    else if (!allMembers.includes(name)) {
+      const updated = [...extraMembers, name];
+      setExtraMembers(updated);
+      updates.extraMembers = updated;
+    }
+    // Name already on active team — do nothing
+    else {
       return;
     }
-    const updated = [...extraMembers, name];
-    setExtraMembers(updated);
-    await updateState({ extraMembers: updated });
+
+    // Always clear any leftover prediction so they start fresh
+    if (predictions[name]) {
+      const updatedPreds = { ...predictions };
+      delete updatedPreds[name];
+      setPredictions(updatedPreds);
+      updates.predictions = updatedPreds;
+    }
+
+    await updateState(updates);
     setNewMemberName("");
   };
 
@@ -80,13 +97,13 @@ export default function AdminPanel({
     // Build all updates in one batch so removal is complete and atomic
     const updates = {};
 
-    // Always delete the prediction if it exists
+    // Always delete the prediction — wipes from chart and leaderboard
     const updatedPreds = { ...predictions };
     if (updatedPreds[name]) {
       delete updatedPreds[name];
-      setPredictions(updatedPreds);
-      updates.predictions = updatedPreds;
     }
+    setPredictions(updatedPreds);
+    updates.predictions = updatedPreds;
 
     // Remove from extra members or add to removed whitelist members
     if (extraMembers.includes(name)) {
@@ -100,10 +117,8 @@ export default function AdminPanel({
       updates.removedMembers = updatedRemoved;
     }
 
-    // Single write to Firestore
-    if (Object.keys(updates).length > 0) {
-      await updateState(updates);
-    }
+    // Single atomic write to Firestore
+    await updateState(updates);
   };
 
   return (
