@@ -51,7 +51,7 @@ export default function Leaderboard({ predictions, members, finalPrice, currentP
             border: "1px solid #e0e0e8"
           }}>
             Actual BTC price: <strong style={{ color: "#f7931a" }}>{formatPrice(finalPrice)}</strong>
-            <span style={{ color: "#888", marginLeft: 6, fontSize: 11 }}>Dec 4, 2026 12:00 PM EST</span>
+            <span style={{ color: "#888", marginLeft: 6, fontSize: 11 }}>Dec 18, 2026 12:00 PM EST</span>
           </div>
         </div>
       )}

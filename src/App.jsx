@@ -168,7 +168,7 @@ export default function App() {
               <span style={{ color: "#00d68f", fontWeight: 600 }}>CONTEST FINALIZED</span>
             ) : (
               <>
-                <span style={{ color: "#888899" }}>Dec 4, 2026 12:00 PM EST</span>
+                <span style={{ color: "#888899" }}>Dec 18, 2026 12:00 PM EST</span>
                 <span style={{ color: "#f7931a", fontWeight: 700 }}>{countdown}</span>
               </>
             )}

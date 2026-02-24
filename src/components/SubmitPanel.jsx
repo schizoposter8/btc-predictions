@@ -29,6 +29,9 @@ export default function SubmitPanel({ predictions, onSubmit, members }) {
         color: "#888899", fontFamily: "'JetBrains Mono', monospace", marginBottom: 20
       }}>
         Submit Your Prediction
+        <span style={{ fontSize: 10, color: "#f7931a", marginLeft: 8, fontWeight: 600 }}>
+          Deadline: March 3, 2026
+        </span>
       </div>
 
       {available.length === 0 ? (

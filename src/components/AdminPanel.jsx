@@ -197,7 +197,7 @@ export default function AdminPanel({
                 borderRadius: 14, padding: 20, marginBottom: 20
               }}>
                 <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 10 }}>
-                  Finalize Contest — auto-finalizes Dec 4, 2026 12:00 PM EST
+                  Finalize Contest — auto-finalizes Dec 18, 2026 12:00 PM EST
                 </div>
                 {contestOver ? (
                   <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
@@ -216,7 +216,7 @@ export default function AdminPanel({
                 ) : (
                   <div>
                     <div style={{ fontSize: 12, color: "#888", marginBottom: 10 }}>
-                      Enter the BTC price at Dec 4, 2026 12:00 PM EST to determine the winner:
+                      Enter the BTC price at Dec 18, 2026 12:00 PM EST to determine the winner:
                     </div>
                     <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
                       <input

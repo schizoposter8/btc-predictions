@@ -2,11 +2,11 @@ export const FALLBACK_PRICE = 68890;
 export const ATH = 126296;
 export const YEAR_LOW = 60062;
 
-// Contest finalization: Dec 4, 2026 at noon EST (17:00 UTC)
-export const DEADLINE = new Date("2026-12-04T17:00:00Z");
+// Contest finalization: Dec 18, 2026 at noon EST (17:00 UTC)
+export const DEADLINE = new Date("2026-12-18T17:00:00Z");
 
-// Submission cutoff: March 1, 2026 midnight UTC
-export const SUBMISSION_DEADLINE = new Date("2026-03-01T00:00:00Z");
+// Submission cutoff: March 3, 2026 end of day (midnight UTC March 4)
+export const SUBMISSION_DEADLINE = new Date("2026-03-04T00:00:00Z");
 
 // Whitelisted team - edit this list to control who can submit
 export const WHITELIST = [
