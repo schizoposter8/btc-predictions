@@ -32,10 +32,27 @@ export default function PriceChart({ predictions, members, currentPrice }) {
     return { price, y: yScale(price) };
   });
 
-  // Build actual price path
+  // Compute current month dynamically
+  const now = new Date();
+  const currentMonth = now.getFullYear() === 2026
+    ? Math.min(now.getMonth() + 1, 12)
+    : (now.getFullYear() > 2026 ? 12 : 2);
+
+  // Build actual price path from hardcoded monthly data
   const actualPrices = MONTHLY_PRICES
     .map((m, i) => (m.price ? { x: xScale(i), y: yScale(m.price), price: m.price, month: m.month } : null))
     .filter(Boolean);
+
+  // Extend the line to the current month using the live price
+  const lastHardcodedIndex = MONTHLY_PRICES.reduce((last, m, i) => (m.price ? i : last), 0);
+  if (currentPrice && currentMonth > lastHardcodedIndex) {
+    actualPrices.push({
+      x: xScale(currentMonth),
+      y: yScale(currentPrice),
+      price: currentPrice,
+      month: MONTHLY_PRICES[currentMonth] ? MONTHLY_PRICES[currentMonth].month : "Now"
+    });
+  }
 
   const startOfYearPrice = DEC31_CLOSE;
 
@@ -78,11 +95,6 @@ export default function PriceChart({ predictions, members, currentPrice }) {
     pred.labelY = y;
   });
 
-  // Compute current month dynamically
-  const now = new Date();
-  const currentMonth = now.getFullYear() === 2026
-    ? Math.min(now.getMonth() + 1, 12)
-    : (now.getFullYear() > 2026 ? 12 : 2);
   const nowX = xScale(currentMonth);
 
   return (
