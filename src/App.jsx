@@ -252,6 +252,7 @@ export default function App() {
           removedMembers={removedMembers} setRemovedMembers={setRemovedMembers}
           finalPrice={finalPrice} setFinalPrice={setFinalPrice}
           allMembers={allMembers} adminPin={adminPin}
+          onSubmit={handleSubmit}
         />
       </div>
     </div>

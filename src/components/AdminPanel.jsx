@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { MEMBER_COLORS, WHITELIST } from "../constants";
+import { MEMBER_COLORS, WHITELIST, SUBMISSION_DEADLINE } from "../constants";
 import { formatPrice, formatK } from "../utils";
 import { updateState } from "../storage";
 
@@ -8,7 +8,7 @@ export default function AdminPanel({
   extraMembers, setExtraMembers,
   removedMembers, setRemovedMembers,
   finalPrice, setFinalPrice,
-  allMembers, adminPin: storedAdminPin
+  allMembers, adminPin: storedAdminPin, onSubmit
 }) {
   const [adminOpen, setAdminOpen] = useState(false);
   const [adminPin, setAdminPin] = useState("");
@@ -16,8 +16,29 @@ export default function AdminPanel({
   const [adminError, setAdminError] = useState("");
   const [newMemberName, setNewMemberName] = useState("");
   const [finalPriceInput, setFinalPriceInput] = useState("");
+  const [adminSubmitName, setAdminSubmitName] = useState("");
+  const [adminSubmitPrice, setAdminSubmitPrice] = useState("");
+  const [adminSubmitting, setAdminSubmitting] = useState(false);
 
   const contestOver = finalPrice !== null;
+
+  // Admin grace period: 1 week after submission deadline
+  const ADMIN_GRACE = new Date(SUBMISSION_DEADLINE.getTime() + 7 * 24 * 60 * 60 * 1000);
+  const now = new Date();
+  const publicDeadlinePassed = now >= SUBMISSION_DEADLINE;
+  const adminGraceActive = publicDeadlinePassed && now < ADMIN_GRACE && !contestOver;
+  const availableForAdminSubmit = allMembers.filter(name => !predictions[name]);
+
+  const handleAdminSubmit = async () => {
+    if (!adminSubmitName || !adminSubmitPrice) return;
+    const p = parseInt(adminSubmitPrice);
+    if (isNaN(p) || p < 1 || p > 500000) return;
+    setAdminSubmitting(true);
+    await onSubmit(adminSubmitName, p);
+    setAdminSubmitName("");
+    setAdminSubmitPrice("");
+    setAdminSubmitting(false);
+  };
 
   const handleAdminAuth = () => {
     if (adminPin === storedAdminPin) {
@@ -189,6 +210,71 @@ export default function AdminPanel({
               }}>
                 Authenticated
               </div>
+
+              {/* Admin Submit — grace period after public deadline */}
+              {adminGraceActive && availableForAdminSubmit.length > 0 && (
+                <div style={{
+                  background: "#f7931a08", border: "1px solid #f7931a33",
+                  borderRadius: 14, padding: 20, marginBottom: 20
+                }}>
+                  <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 4 }}>
+                    Submit Prediction (Admin Override)
+                  </div>
+                  <div style={{ fontSize: 11, color: "#888", marginBottom: 12, fontFamily: "'JetBrains Mono', monospace" }}>
+                    Grace period until {ADMIN_GRACE.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })} 1:00 PM EST
+                  </div>
+                  <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "flex-end" }}>
+                    <div>
+                      <label style={{ display: "block", fontSize: 10, color: "#888", textTransform: "uppercase", letterSpacing: 1, fontFamily: "'JetBrains Mono', monospace", marginBottom: 6 }}>
+                        Team Member
+                      </label>
+                      <select
+                        value={adminSubmitName}
+                        onChange={(e) => setAdminSubmitName(e.target.value)}
+                        style={{
+                          background: "#f0f0f4", border: "1px solid #e0e0e8", borderRadius: 10,
+                          padding: "10px 14px", fontFamily: "'Outfit', sans-serif", fontSize: 14,
+                          color: "#1a1a2a", outline: "none", appearance: "none", cursor: "pointer", minWidth: 180
+                        }}
+                      >
+                        <option value="">Select name...</option>
+                        {availableForAdminSubmit.map(name => (
+                          <option key={name} value={name}>{name}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <label style={{ display: "block", fontSize: 10, color: "#888", textTransform: "uppercase", letterSpacing: 1, fontFamily: "'JetBrains Mono', monospace", marginBottom: 6 }}>
+                        Price (USD)
+                      </label>
+                      <input
+                        type="number"
+                        value={adminSubmitPrice}
+                        onChange={(e) => setAdminSubmitPrice(e.target.value)}
+                        placeholder="e.g. 100000"
+                        style={{
+                          background: "#f0f0f4", border: "1px solid #e0e0e8", borderRadius: 10,
+                          padding: "10px 14px", fontFamily: "'JetBrains Mono', monospace", fontSize: 14,
+                          color: "#1a1a2a", outline: "none", width: 160
+                        }}
+                      />
+                    </div>
+                    <button
+                      onClick={handleAdminSubmit}
+                      disabled={!adminSubmitName || !adminSubmitPrice || adminSubmitting}
+                      style={{
+                        background: adminSubmitName && adminSubmitPrice ? "#f7931a" : "#d0d0dc",
+                        color: "#ffffff", border: "none", borderRadius: 10,
+                        padding: "10px 20px", fontFamily: "'Outfit', sans-serif", fontSize: 14,
+                        fontWeight: 700, cursor: adminSubmitName && adminSubmitPrice ? "pointer" : "not-allowed",
+                        opacity: adminSubmitting ? 0.5 : 1
+                      }}
+                    >
+                      {adminSubmitting ? "Saving..." : "Lock In"}
+                    </button>
+                  </div>
+                </div>
+              )}
 
               {/* Finalize Contest */}
               <div style={{
