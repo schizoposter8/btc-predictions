@@ -22,8 +22,8 @@ export default function AdminPanel({
 
   const contestOver = finalPrice !== null;
 
-  // Admin grace period: 1 week after submission deadline
-  const ADMIN_GRACE = new Date(SUBMISSION_DEADLINE.getTime() + 7 * 24 * 60 * 60 * 1000);
+  // Admin grace period: until March 12, 2026 at 9:00 PM EST (02:00 UTC March 13)
+  const ADMIN_GRACE = new Date("2026-03-13T02:00:00Z");
   const now = new Date();
   const publicDeadlinePassed = now >= SUBMISSION_DEADLINE;
   const adminGraceActive = publicDeadlinePassed && now < ADMIN_GRACE && !contestOver;
@@ -221,7 +221,7 @@ export default function AdminPanel({
                     Submit Prediction (Admin Override)
                   </div>
                   <div style={{ fontSize: 11, color: "#888", marginBottom: 12, fontFamily: "'JetBrains Mono', monospace" }}>
-                    Grace period until {ADMIN_GRACE.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })} 1:00 PM EST
+                    Grace period until Mar 12, 2026 9:00 PM EST
                   </div>
                   <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "flex-end" }}>
                     <div>
