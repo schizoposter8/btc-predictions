@@ -138,19 +138,6 @@ export default function App() {
       <div style={{ position: "relative", zIndex: 1, maxWidth: 920, margin: "0 auto", padding: "40px 20px 80px" }}>
         {/* Header */}
         <div style={{ textAlign: "center", marginBottom: 40 }}>
-          <div style={{
-            display: "inline-flex", alignItems: "center", gap: 8,
-            background: "#f7931a22", border: "1px solid #f7931a",
-            borderRadius: 100, padding: "6px 16px",
-            fontFamily: "'JetBrains Mono', monospace",
-            fontSize: 12, color: "#f7931a", letterSpacing: 0.5, marginBottom: 16
-          }}>
-            <span style={{
-              width: 6, height: 6, background: "#f7931a", borderRadius: "50%",
-              animation: "pulse 2s infinite"
-            }} />
-            {predCount}/{allMembers.length} PREDICTIONS IN
-          </div>
           <h1 style={{
             fontSize: "clamp(1.8rem, 5vw, 2.8rem)", fontWeight: 900,
             letterSpacing: -1.5, lineHeight: 1.1, margin: 0
