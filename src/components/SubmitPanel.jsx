@@ -30,7 +30,7 @@ export default function SubmitPanel({ predictions, onSubmit, members }) {
       }}>
         Submit Your Prediction
         <span style={{ fontSize: 10, color: "#f7931a", marginLeft: 8, fontWeight: 600 }}>
-          Deadline: March 4, 2026 1:00 PM EST
+          Deadline: March 4, 2026 4:00 PM EST
         </span>
       </div>
 
