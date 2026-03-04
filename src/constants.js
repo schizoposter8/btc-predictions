@@ -5,8 +5,8 @@ export const YEAR_LOW = 60062;
 // Contest finalization: Dec 18, 2026 at noon EST (17:00 UTC)
 export const DEADLINE = new Date("2026-12-18T17:00:00Z");
 
-// Submission cutoff: March 4, 2026 at 4:00 PM EST (21:00 UTC)
-export const SUBMISSION_DEADLINE = new Date("2026-03-04T21:00:00Z");
+// Submission cutoff: March 4, 2026 at 5:00 PM EST (22:00 UTC)
+export const SUBMISSION_DEADLINE = new Date("2026-03-04T22:00:00Z");
 
 // Whitelisted team - edit this list to control who can submit
 export const WHITELIST = [
