@@ -61,7 +61,7 @@ export default function PriceChart({ predictions, members, currentPrice, monthly
   for (let i = 0; i < actualPrices.length - 1; i++) {
     const from = actualPrices[i];
     const to = actualPrices[i + 1];
-    const color = to.price >= startOfYearPrice ? "#00d68f" : "#ff4757";
+    const color = to.price >= from.price ? "#00d68f" : "#ff4757";
     segments.push({ from, to, color });
   }
 
