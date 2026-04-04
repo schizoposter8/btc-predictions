@@ -325,14 +325,31 @@ export default function PriceChart({ predictions, members, currentPrice }) {
     ? Math.min(now.getMonth() + 1, 12)
     : (now.getFullYear() > 2026 ? 12 : 2);
 
-  // Build actual price path from hardcoded monthly data
-  const actualPrices = MONTHLY_PRICES
-    .map((m, i) => (m.price ? { x: xScale(i), y: yScale(m.price), price: m.price, month: m.month } : null))
-    .filter(Boolean);
+  // Build actual price path from hardcoded monthly data + live price for current month
+  // For past months with null prices, interpolate between last known and current price
+  const actualPrices = [];
+  let lastKnownPrice = null;
+  let lastKnownIndex = -1;
 
-  // Extend the line to the current month using the live price
-  const lastHardcodedIndex = MONTHLY_PRICES.reduce((last, m, i) => (m.price ? i : last), 0);
-  if (currentPrice && currentMonth > lastHardcodedIndex) {
+  // First pass: add all hardcoded prices
+  MONTHLY_PRICES.forEach((m, i) => {
+    if (m.price) {
+      lastKnownPrice = m.price;
+      lastKnownIndex = i;
+      actualPrices.push({ x: xScale(i), y: yScale(m.price), price: m.price, month: m.month });
+    }
+  });
+
+  // Fill in past months that are null (between last hardcoded and current month) with interpolated prices
+  if (lastKnownPrice && currentPrice && currentMonth > lastKnownIndex) {
+    const gap = currentMonth - lastKnownIndex;
+    for (let i = lastKnownIndex + 1; i < currentMonth; i++) {
+      const t = (i - lastKnownIndex) / gap;
+      const interpPrice = Math.round(lastKnownPrice + t * (currentPrice - lastKnownPrice));
+      const monthLabel = MONTHLY_PRICES[i] ? MONTHLY_PRICES[i].month : `M${i}`;
+      actualPrices.push({ x: xScale(i), y: yScale(interpPrice), price: interpPrice, month: monthLabel });
+    }
+    // Add current month with live price
     actualPrices.push({
       x: xScale(currentMonth),
       y: yScale(currentPrice),
