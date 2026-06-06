@@ -1,6 +1,6 @@
 export const FALLBACK_PRICE = 68890;
 export const ATH = 126296;
-export const YEAR_LOW = 60062;
+export const YEAR_LOW = 60745; // fallback while API loads — auto-updates dynamically
 
 // Contest finalization: Dec 18, 2026 at noon EST (17:00 UTC)
 export const DEADLINE = new Date("2026-12-18T17:00:00Z");
