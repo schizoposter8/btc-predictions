@@ -141,17 +141,21 @@ export default function App() {
       setPriceLoading(false);
     }
 
-    // Fetch 2026 year low from CoinGecko market chart range
+    // Fetch 2026 year-to-date low from CoinGecko
     try {
-      const jan1 = Math.floor(new Date("2026-01-01T00:00:00Z").getTime() / 1000);
-      const now = Math.floor(Date.now() / 1000);
-      const rangeRes = await fetch(
-        `https://api.coingecko.com/api/v3/coins/bitcoin/market_chart/range?vs_currency=usd&from=${jan1}&to=${now}`
+      const jan1 = new Date("2026-01-01T00:00:00Z").getTime();
+      const daysSinceJan1 = Math.ceil((Date.now() - jan1) / 86400000);
+      const lowRes = await fetch(
+        `https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=${daysSinceJan1}`
       );
-      const rangeData = await rangeRes.json();
-      if (rangeData?.prices?.length) {
-        const low = Math.round(Math.min(...rangeData.prices.map(p => p[1])));
-        if (low > 0) setYearLow(low);
+      const lowData = await lowRes.json();
+      if (lowData?.prices?.length) {
+        // Filter to only 2026 data points and find the minimum
+        const prices2026 = lowData.prices.filter(p => p[0] >= jan1);
+        if (prices2026.length) {
+          const low = Math.round(Math.min(...prices2026.map(p => p[1])));
+          if (low > 0) setYearLow(low);
+        }
       }
     } catch (e) {
       // Keep using fallback year low
