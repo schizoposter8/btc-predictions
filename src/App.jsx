@@ -40,6 +40,7 @@ export default function App() {
   const [adminPin, setAdminPin] = useState("beach bagel");
   const [storedMonthlyPrices, setStoredMonthlyPrices] = useState({});
   const [currentPrice, setCurrentPrice] = useState(FALLBACK_PRICE);
+  const [yearLow, setYearLow] = useState(YEAR_LOW);
   const [priceLoading, setPriceLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -138,6 +139,22 @@ export default function App() {
       // Keep using fallback or last known price
     } finally {
       setPriceLoading(false);
+    }
+
+    // Fetch 2026 year low from CoinGecko market chart range
+    try {
+      const jan1 = Math.floor(new Date("2026-01-01T00:00:00Z").getTime() / 1000);
+      const now = Math.floor(Date.now() / 1000);
+      const rangeRes = await fetch(
+        `https://api.coingecko.com/api/v3/coins/bitcoin/market_chart/range?vs_currency=usd&from=${jan1}&to=${now}`
+      );
+      const rangeData = await rangeRes.json();
+      if (rangeData?.prices?.length) {
+        const low = Math.round(Math.min(...rangeData.prices.map(p => p[1])));
+        if (low > 0) setYearLow(low);
+      }
+    } catch (e) {
+      // Keep using fallback year low
     }
   }, []);
 
@@ -259,7 +276,7 @@ export default function App() {
             {[
               { label: "Current Price", value: priceLoading ? "Loading..." : formatPrice(currentPrice), color: "#f7931a" },
               { label: "All-Time High", value: formatPrice(ATH), color: "#1a1a2a" },
-              { label: "2026 Low", value: formatPrice(YEAR_LOW), color: "#ff4757" },
+              { label: "2026 Low", value: formatPrice(yearLow), color: "#ff4757" },
             ].map((item, i) => (
               <div key={i} style={{ textAlign: "center" }}>
                 <div style={{
